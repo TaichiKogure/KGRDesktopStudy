@@ -67,3 +67,138 @@ plt.ylabel('Sepal width')
 plt.xlim(xx.min(), xx.max())
 plt.title('Support Vector Machine')
 plt.show()
+#%%
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.svm import SVC
+import numpy as np
+
+# データセットをロード
+wine = datasets.load_wine()
+
+X = wine.data[:, :2]  # 最初の2つの特徴量を使います
+y = wine.target
+
+# モデルを作成
+model = SVC(kernel='linear')
+model.fit(X, y)
+
+# 決定境界を描くためのメッシュを生成
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+h = (x_max / x_min)/100
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+ np.arange(y_min, y_max, h))
+
+plt.subplot(1, 1, 1)
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+plt.contourf(xx, yy, Z, alpha=0.8)
+
+plt.scatter(X[:, 0], X[:, 1], c=y)
+plt.xlabel('Alcohol')
+plt.ylabel('Malic acid')
+plt.xlim(xx.min(), xx.max())
+plt.title('Support Vector Machine for Wine Dataset')
+plt.show()
+#%%
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from sklearn import datasets
+
+# データセットをロード
+wine = datasets.load_wine()
+
+# 3つの特徴量を選択
+X = wine.data[:, :3]
+y = wine.target
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# 散布図をプロット
+scatter = ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap=plt.cm.Paired)
+
+# 凡例を追加
+legend1 = ax.legend(*scatter.legend_elements(), title="Classes")
+ax.add_artist(legend1)
+
+# 軸ラベルを設定
+ax.set_xlabel('Alcohol')
+ax.set_ylabel('Malic acid')
+ax.set_zlabel('Ash')
+
+plt.show()
+
+#%%
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+from moviepy.editor import VideoClip
+from sklearn import datasets
+from moviepy.video.io.bindings import mplfig_to_npimage # add this line
+# データセットをロード
+wine = datasets.load_wine()
+
+# 3つの特徴量を選択
+X = wine.data[:, :3]
+y = wine.target
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+scatter = ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap=plt.cm.Paired)
+
+legend1 = ax.legend(*scatter.legend_elements(), title="Classes")
+ax.add_artist(legend1)
+
+ax.set_xlabel('Alcohol')
+ax.set_ylabel('Malic acid')
+ax.set_zlabel('Ash')
+
+# フレームを作る関数
+def make_frame(t):
+    ax.view_init(elev=10., azim=360*t/4) # 4秒かけて360度回転します
+    return mplfig_to_npimage(fig) # figをnumpy.ndarrayに変換し、これが画像になります
+
+animation = VideoClip(make_frame, duration=4) # 4秒間の動画を作成します
+animation.write_videofile("wine_rotation.mp4", fps=20) # wine_rotation.mp4という動画ファイルを出力します
+
+#%%
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+from moviepy.editor import VideoClip
+from sklearn import datasets
+from sklearn.decomposition import PCA
+from moviepy.video.io.bindings import mplfig_to_npimage
+
+# データセットをロード
+wine = datasets.load_wine()
+
+# 特徴量
+X = wine.data
+y = wine.target
+
+# PCAの設定(2次元に圧縮)
+pca = PCA(n_components=2)
+
+# PCAの実行
+X_pca = pca.fit_transform(X)
+
+fig = plt.figure(figsize=(4,4))
+
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap=plt.cm.Paired)
+
+legend1 = plt.legend(*scatter.legend_elements(), title="Classes")
+plt.gca().add_artist(legend1)
+
+plt.xlabel('First Principal Component')
+plt.ylabel('Second Principal Component')
+
+# フレームを作る関数
+def make_frame(t):
+    return mplfig_to_npimage(fig)
+
+animation = VideoClip(make_frame, duration=4) # 4秒間の動画を作成します
+animation.write_videofile("wine_pca.mp4",fps=20) # wine_pca.mp4という動画ファイルを出力します
