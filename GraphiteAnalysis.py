@@ -61,3 +61,6 @@ plt.legend()
 plt.ylim([-1, 1]) # ここでyminとymaxを任意の範囲に変更します
 # グラフを表示
 plt.show()
+#
+# s = 0.5 # この値を調整してください
+# spline = UnivariateSpline(x, y, s=s)
