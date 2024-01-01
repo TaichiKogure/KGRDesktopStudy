@@ -17,7 +17,7 @@ y = data[:, 1]
 
 # データをスプライン補間
 
-spline = UnivariateSpline(x, y, s=70)
+spline = UnivariateSpline(x, y, s=68)
 
 # 曲線上のデータポイント
 x_range = np.linspace(min(x), max(x), num=1000)
@@ -29,5 +29,6 @@ plt.plot(x_range, y_range, color='red', label='Spline Interpolation')
 plt.xlabel('x')
 plt.ylabel('Potential(V)')
 plt.title('Spline Interpolation of Data')
+plt.ylim([0, 1]) # ここでyminとymaxを任意の範囲に変更します
 plt.legend()
 plt.show()
